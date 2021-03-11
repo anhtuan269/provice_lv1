@@ -1,20 +1,85 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <div class="form-control">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Chose Province</option>
+        <option
+          v-for="(province, index) in provinces"
+          :key="index"
+          :value="province.id"
+        >
+          {{ province.name }}
+        </option>
+      </select>
+      <select class="form-select" aria-label="Default select example">
+        <option selected>Chose District</option>
+        <option
+          :value="district.id"
+          v-for="(district, dist_index) in districts"
+          :key="dist_index"
+        >
+          {{ district.name }}
+        </option>
+      </select>
+    </div>
+  </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
+<script >
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  data() {
+    return {
+      provinces: [],
+      districts: [],
+    };
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    fetchData() {
+      fetch(
+        "https://api.muabannhanh.com/province/list?session_token=cb2663ce82a9f4ba448ba435091e27bb&phone=0362342558"
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((post) => {
+          return post.result;
+        })
+        .then((data) => {
+          var newArr = [];
+          for (let key in data) {
+            newArr.push(data[key]);
+          }
+          return (this.provinces = newArr);
+        })
+        .then((district_data) => {
+          var newDist = [];
+          for (let i in district_data) {
+            newDist.push(district_data[i].district);
+          }
+          return (this.districts = newDist);
+        })
+        .then((newData) => {
+          var newlist = [];
+          for (let i in newData) {
+            for (let j = 0; j < newData[i].length; j++) {
+              newlist.push(newData[i][j]);
+            }
+          }
+          return (this.districts = newlist);
+        })
+        .catch((err) => alert(err));
+    },
+  },
+  components: {},
+};
 </script>
 
-<style>
+<style scope>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -22,5 +87,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+#app .form-control {
+  display: grid;
+  grid-template-columns: 45% 45%;
+  justify-content: space-between;
 }
 </style>

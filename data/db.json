@@ -1,0 +1,16 @@
+{
+    "province": [
+        {
+            "id":1,
+            "name": "vinh phuc"
+        },
+        {
+            "id":2,
+            "name": "vinh loc"
+        },
+        {
+            "id":3,
+            "name": "vinh tho"
+        }
+    ]
+}
