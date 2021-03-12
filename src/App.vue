@@ -39,39 +39,25 @@ export default {
   },
   methods: {
     fetchData() {
-      fetch(
-        "https://api.muabannhanh.com/province/list?session_token=cb2663ce82a9f4ba448ba435091e27bb&phone=0362342558"
-      )
+      fetch("https://api.muabannhanh.com/province/list?session_token=cb2663ce82a9f4ba448ba435091e27bb&phone=0362342558")
+        .then(json => json.json())
         .then((res) => {
-          return res.json();
-        })
-        .then((post) => {
-          return post.result;
-        })
-        .then((data) => {
-          var newArr = [];
-          for (let key in data) {
-            newArr.push(data[key]);
+          if (res.status == 200) {
+            res.result.map((p) => {
+              this.provinces.push({
+                "id": p.id,
+                "name": p.name
+              })
+              p.district.map((d) => {
+                this.districts.push({
+                  "id": d.id,
+                  "name": d.name
+                })
+              });
+            });
           }
-          return (this.provinces = newArr);
         })
-        .then((district_data) => {
-          var newDist = [];
-          for (let i in district_data) {
-            newDist.push(district_data[i].district);
-          }
-          return (this.districts = newDist);
-        })
-        .then((newData) => {
-          var newlist = [];
-          for (let i in newData) {
-            for (let j = 0; j < newData[i].length; j++) {
-              newlist.push(newData[i][j]);
-            }
-          }
-          return (this.districts = newlist);
-        })
-        .catch((err) => alert(err));
+        .catch(err => alert(err));
     },
   },
   components: {},
